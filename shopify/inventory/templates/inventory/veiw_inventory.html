@@ -1,4 +1,4 @@
-{% extends 'items/base.html' %}
+{% extends 'inventory/base.html' %}
 
 {% block content %}
    <div>
@@ -19,7 +19,7 @@
             </tr>
           </thead>
           <tbody>
-            {% for item in inventory.items %}
+            {% for item in inventory.items_set.all %}
                <tr>
                   <td>{{ item.name }}</td>
                   <td>{{ item.price }}</td>
@@ -27,11 +27,11 @@
                   <td>{{ item.in_stock }}</td>
                   <td>{{ item.sales }}</td>
                   <td>
-                     <a class="btn btn-primary" href="{{ url_for('items.edit_inventory_item', inventory_name=inventory.name, item_id=item._id) }}">
+                     <a class="btn btn-primary" href=#>
                         Edit</a>
                   </td>
                   <td>
-                     <a class="btn btn-danger" href="{{ url_for('items.delete_inventory_item', inventory_name=inventory.name, item_id=item._id) }}">
+                     <a class="btn btn-danger" href=#>
                         Delete</a>
                   </td>
                </tr>

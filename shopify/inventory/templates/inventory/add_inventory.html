@@ -1,0 +1,12 @@
+{% extends 'inventory/base.html' %}
+
+{% block content %}
+<form action="{% url 'inventory:add_inventory' %}" method="POST">
+  {% csrf_token %}
+  <div class="form-group">
+    <label for="addinventory">Inventory Name</label> <span style="color:red">{{ error_message }}</span>
+    <input type="text" class="form-control" id="addinventory" placeholder="new inventory" name="name">
+  </div>
+  <button type="submit" class="btn btn-default">Submit</button>
+</form>
+{% endblock %}
