@@ -10,9 +10,10 @@ class Item(models.Model):
     name = models.CharField(max_length=50)
     price = models.IntegerField()
     sales = models.IntegerField()
-    in_stock = models.BooleanField()
+    in_stock = models.BooleanField(default=False)
     quantity = models.IntegerField()
     deletion_comment = models.CharField(max_length=100)
+    deleted = models.BooleanField(default=False)
     inventory = models.ForeignKey(Inventory, on_delete=models.CASCADE)
 
 

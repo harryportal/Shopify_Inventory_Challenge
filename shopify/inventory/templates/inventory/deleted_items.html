@@ -3,11 +3,7 @@
 {% block content %}
    <div>
       <h3>Shopify Inventory Management Application - {{ inventory.name }}</h3>
-      <a class="btn btn-primary" href="{% url 'inventory:create_item' inventory.id %}">Add Item</a>
-      <a class="btn btn-primary" href="{% url 'inventory:deleted_items' inventory.id %}">Deleted items</a>
-   </div>
-
-    <div>
+      <div>
        <table class="table">
           <thead>
             <tr>
@@ -27,16 +23,13 @@
                   <td>{{ item.in_stock }}</td>
                   <td>{{ item.sales }}</td>
                   <td>
-                     <a class="btn btn-primary" href="{% url 'inventory:edit_item' item.id %}">
-                        Edit</a>
-                  </td>
-                  <td>
-                     <a class="btn btn-danger" href="{% url 'inventory:delete_item' item.id %}">
-                        Delete</a>
+                     <a class="btn btn-primary" href="{% url 'inventory:undo_deletion' item.id%}">
+                        Undo Deletion</a>
                   </td>
                </tr>
             {% endfor %}
           </tbody>
        </table>
     </div>
+   </div>
 {% endblock %}

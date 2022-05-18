@@ -14,7 +14,7 @@
                   <tr>
                      <td>{{ inventory.name }}</td>
                      <th scope="row">
-                        <a class="btn btn-primary" href="{% url 'inventory:view_inventory' %}">View</a>
+                        <a class="btn btn-primary" href="{% url 'inventory:view_inventory' inventory.id%}">View</a>
                      </th>
                   </tr>
                {% endfor %}

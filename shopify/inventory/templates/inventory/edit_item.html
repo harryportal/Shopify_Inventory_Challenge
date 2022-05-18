@@ -1,0 +1,29 @@
+{% extends 'inventory/base.html' %}
+
+{% block content %}
+ <h3>Shopify Inventory Management Application -- {{ item.name }}</h3>
+<form action="{% url 'inventory:edit_item' item.id %}" method="POST">
+    {% csrf_token %}
+    <div class="form-group ">
+        <label for="name">Name</label>
+        <input type="text" id="name" placeholder="Item Name" name="name" value="{{ item.name}}"required >
+    </div>
+    <div class="form-group ">
+        <label for="quantity">Quantity</label>
+        <input type="number" id="quantity" placeholder="Quantity in stock" name="quantity" value="{{ item.quantity }}" required>
+    </div>
+    <div class="form-group ">
+        <label for="price">Price</label>
+        <input type="text" id="price" placeholder="Item Price" name="price" value="{{ item.price}}" required>
+    </div>
+    <div class="form-group ">
+        <label for="sales">Sales</label>
+        <input type="number" id="sales" placeholder="Number of items sold" name="sales" value="{{ item.sales }}" required>
+    </div>
+    <div class="form-group">
+        <label for="stock">In Stock</label>
+        <input type="checkbox" id="stock" name="in_stock" value="True">
+    </div>
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form>
+{% endblock %}

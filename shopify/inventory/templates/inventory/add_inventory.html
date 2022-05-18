@@ -1,12 +1,16 @@
 {% extends 'inventory/base.html' %}
 
 {% block content %}
+   <div>
+      <h3>Shopify Inventory Management Application - All Inventories</h3>
+      <p>Create an inventory and keep track of items</p>
+   </div>
 <form action="{% url 'inventory:add_inventory' %}" method="POST">
   {% csrf_token %}
   <div class="form-group">
     <label for="addinventory">Inventory Name</label> <span style="color:red">{{ error_message }}</span>
-    <input type="text" class="form-control" id="addinventory" placeholder="new inventory" name="name">
+    <input type="text" class="form-control" id="addinventory" placeholder="new inventory" name="name" required>
   </div>
-  <button type="submit" class="btn btn-default">Submit</button>
+  <button type="submit" class="btn btn-primary">Submit</button>
 </form>
 {% endblock %}
