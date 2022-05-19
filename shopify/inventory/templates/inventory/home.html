@@ -1,5 +1,12 @@
 {% extends 'inventory/base.html' %}
 {% block content %}
+<div>
+      <h3>Shopify Inventory Management Application - All Inventories</h3>
+      <p>Create an inventory and keep track of items</p>
+   </div>
+    {% if error %}
+    <span class="btn btn-danger">{{ error }}</span><br><br>
+    {% endif %}
     <div>
        {% if inventories %}
           <table class="table">

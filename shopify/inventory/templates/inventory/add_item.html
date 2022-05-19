@@ -4,6 +4,9 @@
  <h3>Shopify Inventory Management Application -- {{ inventory.name }}</h3>
 <form action="{% url 'inventory:create_item' inventory.id %}" method="POST">
     {% csrf_token %}
+    {% if error %}
+    <span class="btn btn-danger">{{ error }}</span><br><br>
+    {% endif %}
     <div class="form-group ">
         <label for="name">Name</label>
         <input type="text" id="name" placeholder="Item Name" name="name" required >

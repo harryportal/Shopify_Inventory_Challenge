@@ -2,7 +2,7 @@
 
 {% block content %}
    <div>
-      <h3>Shopify Inventory Management Application - {{ inventory.name }}</h3>
+      <h3>Shopify Inventory Management Application - Items Deleted from {{ inventory.name }}</h3>
       <div>
        <table class="table">
           <thead>
@@ -12,6 +12,7 @@
                <th scope="col">Quantity</th>
                <th scope="col">In stock</th>
                <th scope="col">Sales</th>
+                <th scope="col">Comment</th>
             </tr>
           </thead>
           <tbody>
@@ -22,6 +23,8 @@
                   <td>{{ item.quantity }}</td>
                   <td>{{ item.in_stock }}</td>
                   <td>{{ item.sales }}</td>
+                   <td>{{ item.deletion_comment }}</td>
+
                   <td>
                      <a class="btn btn-primary" href="{% url 'inventory:undo_deletion' item.id%}">
                         Undo Deletion</a>

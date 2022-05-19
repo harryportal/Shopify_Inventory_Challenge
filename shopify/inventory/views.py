@@ -31,12 +31,21 @@ class Inventories(generic.ListView):
         return Inventory.objects.all()
 
 
-def ViewInventory_Items(request, inventory_id):
-    inventory = Inventory.objects.get(pk=inventory_id)
-    inventory_items = inventory.item_set.filter(deleted=False).all()
-    context = {'inventory':inventory, 'inventory_items':inventory_items}
-    return render(request, 'inventory/veiw_inventory.html', context)
 
+
+
+def ViewInventory_Items(request, inventory_id):
+    try:
+        inventory = Inventory.objects.get(pk=inventory_id)
+    except(KeyError, Inventory.DoesNotExist):
+        error_message = 'Inventory does not exist'
+        inventories = Inventory.objects.all()
+        context = {'error': error_message, 'inventories': inventories}
+        return render(request, 'inventory/home.html', context)
+    else:
+        inventory_items = inventory.item_set.filter(deleted=False).all()
+        context = {'inventory': inventory, 'inventory_items': inventory_items}
+        return render(request, 'inventory/veiw_inventory.html', context)
 
 
 def create_item(request, inventory_id):
@@ -44,14 +53,25 @@ def create_item(request, inventory_id):
     try:
         inventory = Inventory.objects.get(pk=inventory_id)
     except(KeyError, Inventory.DoesNotExist):
-        return HttpResponseRedirect(reverse('inventory:inventories'))
+        error_message = 'Inventory does not exist'
+        inventories = Inventory.objects.all()
+        context = {'error': error_message, 'inventories': inventories}
+        return render(request, 'inventory/home.html', context)
     if request.method == 'POST':
-        add = request.POST
-        new_item = Item(name=add['name'], quantity=add['quantity'],
-                        sales=add['sales'], in_stock=add['in_stock'],
-                        price=add['price'], inventory_id=inventory.id)
-        new_item.save()
-        return HttpResponseRedirect(reverse('inventory:view_inventory', args=(inventory.id,)))
+        # check if item is in database
+        try:
+            item = Item.objects.filter(name=request.POST['name']).first()
+        except(KeyError, Item.DoesNotExist):
+            add = request.POST
+            new_item = Item(name=add['name'], quantity=add['quantity'],
+                            sales=add['sales'], price=add['price'], inventory_id=inventory.id,
+                            in_stock=add.get('in_stock', False))
+            new_item.save()
+            return HttpResponseRedirect(reverse('inventory:view_inventory', args=(inventory.id,)))
+        else:  # item exists
+            error_message = 'Cannot add item with duplicate Name!'
+            context = {'error': error_message, 'inventory': inventory}
+            return render(request, 'inventory/add_item.html', context)
     else:
         return render(request, 'inventory/add_item.html', {'inventory': inventory})
 
@@ -59,44 +79,75 @@ def create_item(request, inventory_id):
 def delete_item(request, item_id):
     try:
         item = Item.objects.get(pk=item_id)
-    except(KeyError, Inventory.DoesNotExist):
-        return HttpResponseRedirect(reverse('inventory:inventories'))
+    except(KeyError, Item.DoesNotExist):
+        error_message = 'Item does not exist'
+        inventories = Inventory.objects.all()
+        context = {'error': error_message, 'inventories': inventories}
+        return render(request, 'inventory/home.html', context)
     inventory = Inventory.objects.get(pk=item.inventory_id)
     if request.method == 'POST':
         item.deleted = True
+        item.deletion_comment = request.POST['comment']
         item.save()
         return HttpResponseRedirect(reverse('inventory:view_inventory', args=(inventory.id,)))
     else:
-        return render(request, 'inventory/delete_item.html', {'item': item, 'inventory_name':inventory.name})
+        return render(request, 'inventory/delete_item.html', {'item': item, 'inventory_name': inventory.name})
 
 
 def update_item(request, item_id):
     try:
         item = Item.objects.get(pk=item_id)
-    except(KeyError, Inventory.DoesNotExist):
-        return HttpResponseRedirect(reverse('inventory:inventories'))
+    except(KeyError, Item.DoesNotExist):
+        error_message = 'Item does not exist'
+        inventories = Inventory.objects.all()
+        context = {'error': error_message, 'inventories': inventories}
+        return render(request, 'inventory/home.html', context)
     if request.method == 'POST':
-        add = request.POST
-        item.name = add['name']
-        item.quantity = add['quantity']
-        item.sales = add['sales']
-        item.in_stock = add['in_stock']
-        item.price = add['price']
-        item.save()
-        return HttpResponseRedirect(reverse('inventory:view_inventory', args=(item.inventory_id,)))
+        try:
+            item = Item.objects.filter(name=request.POST['name']).first()
+        except(KeyError, Item.DoesNotExist):
+            add = request.POST
+            item.name = add['name']
+            item.quantity = add['quantity']
+            item.sales = add['sales']
+            item.in_stock = add.get('in_stock', False)
+            item.price = add['price']
+            item.save()
+            return HttpResponseRedirect(reverse('inventory:view_inventory', args=(item.inventory_id,)))
+        else:
+            error_message = 'Cannot add item with duplicate Name!'
+            context = {'error': error_message, 'item': item}
+            return render(request, 'inventory/edit_item.html', context)
+
     else:
-        return render(request, 'inventory/edit_item.html', {'item':item})
+        return render(request, 'inventory/edit_item.html', {'item': item})
+
 
 def view_deleteditems(request, inventory_id):
-    inventory = Inventory.objects.get(pk=inventory_id)
-    inventory_items = inventory.item_set.filter(deleted=True).all()
-    context = {'inventory': inventory, 'inventory_items': inventory_items}
-    return render(request, 'inventory/deleted_items.html', context)
+    try:
+        inventory = Inventory.objects.get(pk=inventory_id)
+    except(KeyError, Inventory.DoesNotExist):
+        error_message = 'Inventory does not exist'
+        inventories = Inventory.objects.all()
+        context = {'error': error_message, 'inventories': inventories}
+        return render(request, 'inventory/home.html', context)
+    else:
+        inventory_items = inventory.item_set.filter(deleted=True).all()
+        context = {'inventory': inventory, 'inventory_items': inventory_items}
+        return render(request, 'inventory/deleted_items.html', context)
+
+
 
 def undo_deletion(request, item_id):
-    item = Item.objects.get(pk=item_id)
-    inventory = Inventory.objects.get(pk=item.inventory_id)
-    item.deleted = False
-    item.save()
-    return HttpResponseRedirect(reverse('inventory:view_inventory', args=(inventory.id,)))
-
+    try:
+        item = Item.objects.get(pk=item_id)
+    except(KeyError, Item.DoesNotExist):
+        error_message = 'Item does not exist'
+        inventories = Inventory.objects.all()
+        context = {'error': error_message, 'inventories': inventories}
+        return render(request, 'inventory/home.html', context)
+    else:
+        inventory = Inventory.objects.get(pk=item.inventory_id)
+        item.deleted = False
+        item.save()
+        return HttpResponseRedirect(reverse('inventory:view_inventory', args=(inventory.id,)))
