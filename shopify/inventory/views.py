@@ -103,10 +103,18 @@ def update_item(request, item_id):
         context = {'error': error_message, 'inventories': inventories}
         return render(request, 'inventory/home.html', context)
     if request.method == 'POST':
+        add = request.POST
         try:
             item = Item.objects.filter(name=request.POST['name']).first()
         except(KeyError, Item.DoesNotExist):
-            add = request.POST
+            item.name = add['name']
+            item.quantity = add['quantity']
+            item.sales = add['sales']
+            item.in_stock = add.get('in_stock', False)
+            item.price = add['price']
+            item.save()
+            return HttpResponseRedirect(reverse('inventory:view_inventory', args=(item.inventory_id,)))
+        if add['name'] == item.name:
             item.name = add['name']
             item.quantity = add['quantity']
             item.sales = add['sales']
@@ -118,7 +126,6 @@ def update_item(request, item_id):
             error_message = 'Cannot add item with duplicate Name!'
             context = {'error': error_message, 'item': item}
             return render(request, 'inventory/edit_item.html', context)
-
     else:
         return render(request, 'inventory/edit_item.html', {'item': item})
 
