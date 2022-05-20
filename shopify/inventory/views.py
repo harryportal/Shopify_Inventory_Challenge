@@ -3,9 +3,10 @@ from .models import Inventory, Item
 from django.views import generic
 from django.urls import reverse
 from django.http import HttpResponseRedirect
-from django.shortcuts import render
+from django.views.decorators.csrf import csrf_protect
 
 
+@csrf_protect
 def create(request):
     """ create a new inventory product """
     if request.method == 'POST':
