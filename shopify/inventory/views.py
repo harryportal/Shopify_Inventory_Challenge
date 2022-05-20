@@ -3,10 +3,10 @@ from .models import Inventory, Item
 from django.views import generic
 from django.urls import reverse
 from django.http import HttpResponseRedirect
-from django.views.decorators.csrf import csrf_protect
+from django.views.decorators.csrf import csrf_exempt
 
 
-@csrf_protect
+@csrf_exempt
 def create(request):
     """ create a new inventory product """
     if request.method == 'POST':
@@ -61,9 +61,8 @@ def create_item(request, inventory_id):
         return render(request, 'inventory/home.html', context)
     if request.method == 'POST':
         # check if item is in database
-        try:
-            item = Item.objects.filter(name=request.POST['name']).first()
-        except(KeyError, Item.DoesNotExist):
+        item = Item.objects.filter(name=request.POST['name']).first()
+        if item is None:
             add = request.POST
             new_item = Item(name=add['name'], quantity=add['quantity'],
                             sales=add['sales'], price=add['price'], inventory_id=inventory.id,
