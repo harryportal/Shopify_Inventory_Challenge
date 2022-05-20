@@ -60,9 +60,8 @@ def create_item(request, inventory_id):
         return render(request, 'inventory/home.html', context)
     if request.method == 'POST':
         # check if item is in database
-        try:
-            item = Item.objects.filter(name=request.POST['name']).first()
-        except(KeyError, Item.DoesNotExist):
+        item = Item.objects.filter(name=request.POST['name']).first()
+        if item is None:
             add = request.POST
             new_item = Item(name=add['name'], quantity=add['quantity'],
                             sales=add['sales'], price=add['price'], inventory_id=inventory.id,
