@@ -10,16 +10,17 @@ def create(request):
     """ create a new inventory product """
     if request.method == 'POST':
         inventory_name = request.POST['name']
-        if inventory_name:
+        inventory = Inventory.objects.filter(name=inventory_name).first()
+        if inventory is None:
             new_inventory = Inventory(name=inventory_name)
             new_inventory.save()
             return HttpResponseRedirect(reverse('inventory:inventories'))
         else:
-            error = 'Please input a valid name'
+            error = 'Inventory name exist!, Please input a new inventory'
             return render(request, 'inventory/add_inventory.html', {'error_message': error})
+
     else:
         return render(request, 'inventory/add_inventory.html')
-
 
 class Inventories(generic.ListView):
     """ returns a list of inventory items """
