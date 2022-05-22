@@ -100,8 +100,8 @@ def update_item(request, item_id):
         return render(request, 'inventory/home.html', context)
     if request.method == 'POST':
         add = request.POST
-        item = Item.objects.filter(name=request.POST['name']).first()
-        if item is None or item.name==add['name']:
+        check_item = Item.objects.filter(name=request.POST['name']).first()
+        if check_item is None or item.name==add['name']:
             item.name = add['name']
             item.quantity = add['quantity']
             item.sales = add['sales']
