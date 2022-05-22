@@ -7,7 +7,7 @@ class Inventory(models.Model):
         return f'Name:{self.name}'
 
 class Item(models.Model):
-    name = models.CharField(max_length=50)
+    name = models.TextField(max_length=50)
     price = models.IntegerField()
     sales = models.IntegerField()
     in_stock = models.BooleanField(default=False)
