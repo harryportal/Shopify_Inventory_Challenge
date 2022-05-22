@@ -12,8 +12,7 @@ def create(request):
         inventory_name = request.POST['name']
         inventory = Inventory.objects.filter(name=inventory_name).first()
         if inventory is None:
-            new_inventory = Inventory(name=inventory_name)
-            new_inventory.save()
+            Inventory.objects.create(name=inventory_name)
             return HttpResponseRedirect(reverse('inventory:inventories'))
         else:
             error = 'Inventory name exist!, Please input a new inventory'
@@ -63,10 +62,9 @@ def create_item(request, inventory_id):
         item = Item.objects.filter(name=request.POST['name']).first()
         if item is None:
             add = request.POST
-            new_item = Item(name=add['name'], quantity=add['quantity'],
+            Item.objects.create(name=add['name'], quantity=add['quantity'],
                             sales=add['sales'], price=add['price'], inventory_id=inventory.id,
                             in_stock=add.get('in_stock', False))
-            new_item.save()
             return HttpResponseRedirect(reverse('inventory:view_inventory', args=(inventory.id,)))
         else:  # item exists
             error_message = 'Cannot add item with duplicate Name!'
@@ -104,17 +102,8 @@ def update_item(request, item_id):
         return render(request, 'inventory/home.html', context)
     if request.method == 'POST':
         add = request.POST
-        try:
-            item = Item.objects.filter(name=request.POST['name']).first()
-        except(KeyError, Item.DoesNotExist):
-            item.name = add['name']
-            item.quantity = add['quantity']
-            item.sales = add['sales']
-            item.in_stock = add.get('in_stock', False)
-            item.price = add['price']
-            item.save()
-            return HttpResponseRedirect(reverse('inventory:view_inventory', args=(item.inventory_id,)))
-        if add['name'] == item.name:
+        item = Item.objects.filter(name=request.POST['name']).first()
+        if item is None or item.name==add['name']:
             item.name = add['name']
             item.quantity = add['quantity']
             item.sales = add['sales']
