@@ -1,0 +1,5 @@
+language = "python3"
+run = """
+cd shopify 
+python manage.py runserver 0.0.0.0:3000
+"""

@@ -23,9 +23,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-6g5s=8-_ef3ct(-89kr_lxo-7ni&^_yws5shc4mliy8cqx^@d_'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
-ALLOWED_HOSTS = ["*"]
+CSRF_COOKIE_SECURE = True
+CSRF_TRUSTED_ORIGINS = ['https://e08a3fa2-f326-4956-a1e2-d17fff2a215a.id.repl.co', 'https://shopifyinventorychallenge-3.harryconcept.repl.co']
+ALLOWED_HOSTS = ['*']
+X_FRAME_OPTIONS = '*'
 
 
 # Application definition
@@ -44,7 +47,7 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
+    #'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',

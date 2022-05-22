@@ -3,8 +3,6 @@ from .models import Inventory, Item
 from django.views import generic
 from django.urls import reverse
 from django.http import HttpResponseRedirect
-from django.shortcuts import render
-
 
 def create(request):
     """ create a new inventory product """

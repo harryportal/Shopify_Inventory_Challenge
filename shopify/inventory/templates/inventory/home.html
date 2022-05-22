@@ -28,7 +28,7 @@
              </tbody>
           </table>
          {% else %}
-            <p>No inventory available. <a href="{% url 'inventory:add_inventory' %}">Add an Inventory</a></p>
+            <p>No inventory available.</p>
        {% endif %}
        <div>
          <a class="btn btn-primary" href="{% url 'inventory:add_inventory' %}">Add Inventory</a>
